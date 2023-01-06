@@ -85,7 +85,7 @@ After job is complete following input would produce the output below it:
 ```
 
 ![Alt text](/andbehav.png?raw=true "Title")
-![Alt text](/appearance.png?raw=true "Title")
+![Alt text](/apperance.png?raw=true "Title")
 
 ## Components to parse:
 These components need only to be parsed and created using qtquick control default components
