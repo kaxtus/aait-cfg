@@ -6,7 +6,7 @@ This program parses yaml configuration file accompanied by a form yaml file and 
 - Cerberus for configuration validation
 - PyYaml for reading yaml files
 
-These libs can be installed using command:
+These libraries can be installed using command:
 ```asm
 pip3 install pyside2 cerberus pyyaml
 ```
@@ -24,3 +24,5 @@ These components need only to be parsed and created using qtquick control defaul
 5. Checkbox with label and paragraph
 6. Ordered List
 
+# Job description
+1. 
