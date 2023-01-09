@@ -1,0 +1,143 @@
+{
+  'server': {
+    'required': True,
+    'type': 'dict',
+    'meta': {
+      'text': 'Server',
+      'parent': True
+    },
+    'schema': {
+      'api': {
+        'required': True,
+        'type': 'ip',
+        'meta': {
+          'text': 'Api server',
+          'doc': 'Set the API server of the database in this field'
+        }
+      }
+    }
+  },
+  'constants': {
+    'required': True,
+    'type': 'dict',
+    'meta': {
+      'text': 'Constant values',
+      'parent': True
+    },
+    'schema': {
+      'cond': {
+        'required': True,
+        'type': 'orderedList',
+        'meta': {
+          'text': 'Condition'
+        }
+      }
+    }
+  },
+  'template': {
+    'required': True,
+    'type': 'dict',
+    'meta': {
+      'text': 'Templates',
+      'parent': True
+    },
+    'schema': {
+      'logo_dir': {
+        'required': True,
+        'type': 'dir',
+        'meta': {
+          'text': 'Condition',
+          'type': 'dropdown'
+        }
+      },
+      'quote': {
+        'required': True,
+        'type': 'dict',
+        'schema': {
+          'dir': {
+            'type': 'dir',
+            'meta': {
+              'text': 'Folder directory of template'
+            }
+          },
+          'shrink_to_items': {
+            'type': 'checkbox',
+            'meta': {
+              'text': 'Shrink to items'
+            }
+          }
+        },
+        'meta': {
+          'text': 'Quote',
+          'parent': True
+        }
+      }
+    }
+  },
+  'issuing': {
+    'required': True,
+    'type': 'dict',
+    'meta': {
+      'text': 'Issuing',
+      'parent': True
+    },
+    'schema': {
+      'auto_set_ship_to': {
+        'required': True,
+        'type': 'string',
+        'meta': {
+          'text': 'Auto setting of ship and bill',
+          'type': 'checkbox'
+        }
+      },
+      'quote': {
+        'required': True,
+        'type': 'dict',
+        'schema': {
+          'id': {
+            'type': 'string',
+            'meta': {
+              'text': 'prefix',
+              'type': 'string'
+            }
+          },
+          'output_dir': {
+            'type': 'dir',
+            'meta': {
+              'text': 'Output directory',
+              'type': 'dir'
+            }
+          }
+        },
+        'meta': {
+          'text': 'Quote',
+          'parent': True
+        }
+      },
+      'po': {
+        'required': True,
+        'type': 'dict',
+        'schema': {
+          'id': {
+            'type': 'string',
+            'meta': {
+              'text': 'prefix',
+              'type': 'string'
+            }
+          },
+          'output_dir': {
+            'type': 'dir',
+            'meta': {
+              'text': 'Output directory',
+              'type': 'dir'
+            }
+          }
+        },
+        'meta': {
+          'text': 'Po',
+          'parent': True
+        }
+      }
+    }
+  }
+}
