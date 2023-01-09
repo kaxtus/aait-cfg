@@ -116,7 +116,7 @@ ApplicationWindow {
 														 } else {
 															 configPages.push({
 																				  "name": el.meta && el.meta.text ? el.meta.text : objectKey,
-																				  "icon": "../../resources/icons/quote_small.svg"
+																				  "icon": el.meta && el.meta.icon ? el.meta.icon : '' // SVG icon
 																			  })
 														 }
 

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+﻿import QtQuick 2.0
 import QtQuick.Layouts 1.15
 import QtQuick.Controls.Material 2.4
 import QtQuick.Controls 2.4
@@ -18,7 +18,6 @@ Pane {
 	}
 	property var innerListModelArr: []
 	anchors.fill: parent
-
 	Rectangle {
 		anchors.fill: parent
 		ListModel {
@@ -28,7 +27,6 @@ Pane {
 			id: someComponent
 			ListModel {}
 		}
-
 		Component.onCompleted: {
 			outerList.forEach(el => {
 								  const newModel = someComponent.createObject(
@@ -46,22 +44,18 @@ Pane {
 								  outerListModel.append(el)
 							  })
 		}
-
 		ListView {
 			id: outer
 			model: outerListModel
 			delegate: listdelegate
 			anchors.fill: parent
 		}
-
 		Component {
 			id: listdelegate
-
 			Item {
 				width: parent.width
 				height: col.childrenRect.height
 				property int colIndex: index
-
 				Column {
 					id: col
 					anchors.left: parent.left
@@ -84,10 +78,9 @@ Pane {
 								z: 1
 								Image {
 									id: imagePhoto
-									source: icon
-											|| '../../resources/icons/next.png'
-									width: 15
-									height: 15
+									source: innerListDict[name] ? '../svg/right_arrow.svg' : ''
+									width: 20
+									height: 20
 									Layout.topMargin: 5
 									transform: Rotation {
 										id: rotateImagePhoto
@@ -114,7 +107,6 @@ Pane {
 								text: name
 							}
 						}
-
 						MouseArea {
 							anchors.fill: parent
 							z: -1
@@ -132,7 +124,6 @@ Pane {
 							}
 						}
 					}
-
 					ListView {
 						id: insidelist
 						currentIndex: outerListSelectedIndex === index ? innerListSelectedIndex : -1
