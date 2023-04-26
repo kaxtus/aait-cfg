@@ -1,18 +1,38 @@
 {
-  'server': {
+  'database': {
     'required': True,
     'type': 'dict',
     'meta': {
-      'text': 'Server',
+      'text': 'Database',
       'parent': True
     },
     'schema': {
-      'api': {
+      'server': {
         'required': True,
-        'type': 'ip',
+        'type': 'string',
         'meta': {
-          'text': 'Api server',
-          'doc': 'Set the API server of the database in this field'
+          'text': 'Database server address'
+        }
+      },
+      'port': {
+        'required': True,
+        'type': 'string',
+        'meta': {
+          'text': 'Database server port'
+        }
+      },
+      'username': {
+        'required': True,
+        'type': 'string',
+        'meta': {
+          'text': 'Database username'
+        }
+      },
+      'password': {
+        'required': True,
+        'type': 'string',
+        'meta': {
+          'text': 'Database Password'
         }
       }
     }
@@ -46,6 +66,13 @@
           'text': 'Delivery'
         }
       },
+      'currency': {
+        'required': True,
+        'type': 'orderedList',
+        'meta': {
+          'text': 'Currency'
+        }
+      },
       'prepared_by': {
         'required': True,
         'type': 'orderedList',
@@ -73,6 +100,20 @@
         'meta': {
           'text': 'Minimum Order'
         }
+      },
+      'expiry': {
+        'required': True,
+        'type': 'orderedList',
+        'meta': {
+          'text': 'Expiry'
+        }
+      },
+      'document_type': {
+        'required': True,
+        'type': 'orderedList',
+        'meta': {
+          'text': 'Items document types'
+        }
       }
     }
   },
@@ -88,7 +129,7 @@
         'required': True,
         'type': 'dir',
         'meta': {
-          'text': 'Condition',
+          'text': 'Directory of logo',
           'type': 'dropdown'
         }
       },
@@ -96,21 +137,43 @@
         'required': True,
         'type': 'dict',
         'schema': {
-          'dir': {
-            'type': 'dir',
-            'meta': {
-              'text': 'Folder directory of template'
-            }
-          },
           'shrink_to_items': {
             'type': 'checkbox',
             'meta': {
               'text': 'Shrink to items'
             }
+          },
+          'prompt_choose': {
+            'type': 'checkbox',
+            'meta': {
+              'text': 'Choose Template On Each Issue'
+            }
           }
         },
         'meta': {
           'text': 'Quote',
+          'parent': True
+        }
+      },
+      'invoice': {
+        'required': True,
+        'type': 'dict',
+        'schema': {
+          'shrink_to_items': {
+            'type': 'checkbox',
+            'meta': {
+              'text': 'Shrink to items'
+            }
+          },
+          'prompt_choose': {
+            'type': 'checkbox',
+            'meta': {
+              'text': 'Choose Template On Each Issue'
+            }
+          }
+        },
+        'meta': {
+          'text': 'Invoice',
           'parent': True
         }
       }
@@ -124,7 +187,7 @@
       'parent': True
     },
     'schema': {
-      'auto_set_ship_to': {
+      'auto_set_contacts': {
         'required': True,
         'type': 'checkbox',
         'meta': {
@@ -138,9 +201,7 @@
           'id': {
             'type': 'id',
             'meta': {
-              'text': 'prefix',
-              'type': 'string',
-              'doc': 'Choose the configuration for the quote identification'
+              'text': 'ID'
             }
           },
           'output_dir': {
@@ -156,15 +217,14 @@
           'parent': True
         }
       },
-      'po': {
+      'invoice': {
         'required': True,
         'type': 'dict',
         'schema': {
           'id': {
             'type': 'id',
             'meta': {
-              'text': 'prefix',
-              'type': 'string'
+              'text': 'ID'
             }
           },
           'output_dir': {
@@ -176,7 +236,7 @@
           }
         },
         'meta': {
-          'text': 'Po',
+          'text': 'Invoice',
           'parent': True
         }
       }

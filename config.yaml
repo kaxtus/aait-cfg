@@ -1,0 +1,116 @@
+constants:
+  cert_source:
+  - FAA 8130-3
+  - 129 Trace
+  - EASA F1
+  - JAA F1
+  - 145 Trace
+  - Company C of C
+  - OEM
+  - None
+  cond:
+  - NS
+  - OH
+  - NE
+  - FN
+  - N
+  - SV
+  - AR
+  - NQ
+  currency:
+  - GBP
+  - Euro
+  - Dollar
+  delivery:
+  - 1 week
+  - 2 weeks
+  - 3 weeks
+  - 4 weeks
+  - 6 weeks
+  - 8 weeks
+  - 10 weeks
+  - 12 weeks
+  - 1 day
+  - 2 days
+  - 3 days
+  - 4 days
+  - 5 days
+  - 6 days
+  - NQ
+  document_types:
+  - Certificate
+  - Photo
+  - Shop Report
+  - Other
+  expiry:
+  - 1 week
+  - 3 Weeks
+  - 2 Days
+  - 1 Day
+  - 4 Months
+  fob:
+  - IKA, Tehran / IR
+  - Dubai
+  minimum_order:
+  - None, unless specified.
+  - '400'
+  - '200'
+  - '1000'
+  prepared_by:
+  - John Doe
+  - Jane Smith
+  - David Johnson
+  - Emily Davis
+  - Michael Brown
+  - Samantha Wilson
+  - Jacob Martinez
+  - Olivia Rodriguez
+  - Daniel Lee
+  - Isabella Hernandez
+  terms_of_payment:
+  - Net 30
+  - Net 10, 2% discount
+  - COD
+  - Payment in advance
+database:
+  dir: excel-files/database
+  server: ''
+  username: ''
+issuing:
+  auto_set_contacts: true
+  invoice:
+    id:
+      length: 6
+      prefix: IAZ/
+    output_dir: excel-files/invoice
+  quote:
+    id:
+      length: 6
+      prefix: QAZ/
+    output_dir: excel-files/quotes
+
+template:
+  invoice:
+    aat:
+      dir: excel-files/templates/invoice/aat
+      logo_dir: excel-files/templates/invoice/aat/logo.png
+    default: aat
+    shrink_to_items: false
+  logo_dir: excel-files/logo.png
+  quote:
+    aat:
+      dir: excel-files/templates/quote/aat
+      logo_dir: excel-files/templates/quote/aat/logo.png
+    default: aat
+    prompt_choose: true
+    shrink_to_items: false
+    sparescrew:
+      dir: excel-files/templates/quote/sparescrew
+      logo_dir: excel-files/templates/quote/sparescrew/logo.png
+
+view:
+  table:
+    pagination:
+    - 100
+    - 200
+    - all

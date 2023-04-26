@@ -3,232 +3,335 @@ import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.4
 import QtQuick.Controls.Universal 2.4
-import "./Layout"
-import "./components"
+import QtQuick.Dialogs 1.1
+import "./form"
+import "./primitive"
+import "./layout"
 import "../js/data.js" as OP
 
 ApplicationWindow {
-  id: history
-  width: 1137
-  height: 700
-  visible: true
-  title: qsTr("Settings")
-  property int currentStackLayoutIndex: 0
-  property var stackLayoutMap: {
+	id: configWindow
+	width: 1137
+	height: 700
+	visible: true
+	title: qsTr("Configuration")
+	property int currentStackLayoutIndex: 0
+	property var stackLayoutMap: {
 
-  }
-  property var configPages: []
-  property var innerConfigDict: {
-    "test": "test"
-  }
-  Component {
-    id: stackLayoutItemComponent
-    ColumnLayout {}
-  }
-  Component {
-    id: stackLayoutItemLabelComponent
-    Text {
-      text: "Hello"
-    }
-  }
-  Component {
-    id: dropDownItemComponent
-    DropDown {
-      property string modelsKey
-      onActivated: activatedIndex => {
-                     OP.set(cfgForm, modelsKey, 'new')
-                   }
-    }
-  }
-  Component {
-    id: checkBoxItemComponent
-    CheckBox {
-      property string modelsKey
-    }
-  }
-  Component {
-    id: orderedTableItemComponent
-    OrderedList {}
-  }
-  Component {
-    id: paragraphItemComponent
-    Text {
-      text: "Paragraph"
-    }
-  }
-  Component {
-    id: sectionItemComponent
-    Text {
-      text: "section"
-    }
-  }
-  Component {
-    id: linkItemComponent
-    Text {
-      text: "link"
-    }
-  }
-  Component {
-    id: ipItemComponent
-    TextField {
-      text: "text item component"
-    }
-  }
+	}
+	property var configPages: []
+	property var innerConfigDict: {
+		"test": "test"
+	}
+	MessageDialog {
+		property string objectLabel
+		property string saveResult: ''
+		id: messageDialog
+		title: saveResult.length
+			   === 0 ? "Configuration Saved successfull" : "Error with configuration"
+		text: {
+			if (saveResult.length === 0) {
+				return "Configuration saved successfully!"
+			}
+			return saveResult
+		}
+	}
 
-  Component.onCompleted: {
-    createStackLayoutFromJson(cfgForm, stackLayout)
-  }
-  function createStackLayoutFromJson(jsonObject, parent) {
+	Component {
+		id: stackLayoutItemComponent
+		Pane {
+			property alias title: titleText.text
+			property alias columnLayout: columnLayout
+			ScrollView {
+				height: parent.height
+				width: parent.width
+				ColumnLayout {
+					id: columnLayout
+					spacing: 10
+					SectionLabel {
+						id: titleText
+						text: text
+					}
+				}
+			}
+		}
+	}
+	Component {
+		id: dropDownItemComponent
+		DropDown {
+			//			property string modelsKey
+			//model: OP.get(qmlconf.cfg, modelsKey)
+			onActivated: activatedIndex => {
+							 OP.set(newConfig, modelsKey, 'new')
+						 }
+		}
+	}
+	Component {
+		id: checkBoxItemComponent
+		CheckBox {
+			property string modelsKey
+			checked: OP.get(qmlconf.ccfg, modelsKey)
+			onCheckedChanged: {
+				OP.set(qmlconf.cfg, modelsKey, changed)
+			}
+		}
+	}
+	Component {
+		id: orderedTableItemComponent
+		DragDropList {
+			property string modelsKey
+			itemList: OP.get(cfg, modelsKey)
+			onSetChanges: newValues => {
+							  OP.set(newConfig, modelsKey, newValues)
+						  }
+		}
+	}
+	Component {
+		id: directoryItemComponent
+		ColumnLayout {
+			property string text
+			property string modelsKey
+			BrowseLogoFileDialog {
+				id: browse
+				onAccepted: {
+				}
+			}
+			Text {
+				text: parent.text
+			}
+			RowLayout {
+				TextField {
+					id: dirTextField
+					selectByMouse: true
+					implicitWidth: 300
+					text: OP.get(qmlconf.ccfg, modelsKey)
+				}
+				Button {
+					text: "Browse"
+					onClicked: {
+						browse.open()
+					}
+				}
+			}
+		}
+	}
+	Component {
+		id: paragraphItemComponent
+		Text {
+			text: "Paragraph"
+		}
+	}
+	Component {
+		id: sectionItemComponent
+		Text {
+			text: "section"
+		}
+	}
+	Component {
+		id: linkItemComponent
+		Text {
+			text: "link"
+		}
+	}
+	Component {
+		id: idItemComponent
+		RowLayout {
 
-    // Parses if object has following: 1 -
-    innerConfigDict = {}
-    // ToDo for lawrence: I folder components, create 3 components defined in this list
-    const componentsMap = {
-      "dropdown": orderedTableItemComponent,
-      "checkbox": checkBoxItemComponent,
-      "orderedList": orderedTableItemComponent,
-      "paragraph": paragraphItemComponent,
-      "section": sectionItemComponent,
-      "link": linkItemComponent,
-      "ip": ipItemComponent,
-      "dir": paragraphItemComponent
-    }
-    let stackLayoutId = 0
-    // Create main stack layout
-    function recursiveReader(recursiveObject, parentMenu, addressInObject) {
-      // Iterates items object
-      Object.keys(recursiveObject).forEach(objectKey => {
-                                             const el = recursiveObject[objectKey]
-                                             // If has own layout
-                                             if (el.meta.parent) {
-                                               recursiveReader(
-                                                 el.schema, el.meta.text,
-                                                 (addressInObject ? addressInObject + '.' : '')
-                                                 + objectKey)
-                                             }
-                                             if (el.schema) {
-                                               if (parentMenu) {
-                                                 if (!innerConfigDict[parentMenu]) {
-                                                   innerConfigDict[parentMenu] = []
-                                                 }
-                                                 innerConfigDict[parentMenu].push({
-                                                                                    "name": el.meta.text
-                                                                                  })
-                                               } else {
-                                                 configPages.push({
-                                                                    "name": el.meta
-                                                                            && el.meta.text ? el.meta.text : objectKey,
-                                                                    "icon": el.meta
-                                                                            && el.meta.icon ? el.meta.icon : '' // SVG icon
-                                                                  })
-                                               }
+			property string text
+			property string modelsKey
+			ColumnLayout {
+				Text {
+					text: 'ID Prefix'
+				}
+				RowLayout {
+					TextField {
+						text: OP.get(qmlconf.ccfg, modelsKey + '.prefix')
+					}
+				}
+			}
+			ColumnLayout {
+				Text {
+					text: 'ID Length'
+				}
+				RowLayout {
+					TextField {
+						text: OP.get(qmlconf.cfg, modelsKey + '.length')
+					}
+				}
+			}
+		}
+	}
+	Component {
+		id: ipItemComponent
+		ColumnLayout {
+			property string text
+			property string modelsKey
+			Text {
+				text: parent.text
+			}
+			TextField {
+				text: OP.get(qmlconf.cfg, modelsKey)
+			}
+		}
+	}
 
-                                               const stackLayout = stackLayoutItemComponent.createObject(
-                                                 parent)
-                                               if (!stackLayoutMap) {
-                                                 stackLayoutMap = {}
-                                               }
-                                               stackLayoutMap[el.meta.text + '-'
-                                                              + (parentMenu
-                                                                 || '')] = stackLayoutId
-                                               stackLayoutId += 1
-                                               const uiLabel = stackLayoutItemLabelComponent.createObject(
-                                                 stackLayout, {
-                                                   "text": el.meta.text
-                                                 })
-                                               Object.keys(
-                                                 el.schema).forEach(key => {
-                                                                      const el2 = el.schema[key]
-                                                                      if (el2
-                                                                          && el2.meta) {
+	Component.onCompleted: {
+		createStackLayoutFromJson(qmlconf.form, stackLayout)
+	}
+	function createStackLayoutFromJson(jsonObject, parent) {
 
-                                                                        if (el2.meta.parent) {
+		// Parses if object has following: 1 -
+		innerConfigDict = {}
+		const componentsMap = {
+			"dropdown": dropDownItemComponent,
+			"checkbox": checkBoxItemComponent,
+			"orderedList": orderedTableItemComponent,
+			"paragraph": paragraphItemComponent,
+			"section": sectionItemComponent,
+			"link": linkItemComponent,
+			"ip": ipItemComponent,
+			"string": ipItemComponent,
+			"dir": directoryItemComponent,
+			"id": idItemComponent
+		}
+		let stackLayoutId = 0
+		// Create main stack layout
+		function recursiveReader(recursiveObject, parentMenu, addressInObject) {
+			// Iterates items object
+			console.error(recursiveObject)
+			Object.keys(recursiveObject).forEach(objectKey => {
+													 const el = recursiveObject[objectKey]
+													 if (!el)
+													 return
+													 console.error(objectKey)
+													 console.error(addressInObject)
+													 // If has own layout
+													 if (el.meta.parent) {
+														 recursiveReader(
+															 el.schema,
+															 el.meta.text,
+															 (addressInObject.length > 0 ? addressInObject + '.' : '') + objectKey)
+													 }
+													 if (el.schema) {
+														 if (parentMenu) {
+															 if (!innerConfigDict[parentMenu]) {
+																 innerConfigDict[parentMenu] = []
+															 }
+															 innerConfigDict[parentMenu].push({
+																								  "name": el.meta.text
+																							  })
+														 } else {
+															 configPages.push({
+																				  "name": el.meta && el.meta.text ? el.meta.text : objectKey,
+																				  "icon": "../../resources/icons/quote_small.svg"
+																			  })
+														 }
+														 const keysAddress = (addressInObject.length > 0 ? addressInObject + '.' : '') + objectKey
+														 const stackLayout = stackLayoutItemComponent.createObject(
+															 parent, {
+																 "title": Text.capitalizeFirstLetter(keysAddress) + ' Configuration'
+															 })
+														 if (!stackLayoutMap) {
+															 stackLayoutMap = {}
+														 }
+														 stackLayoutMap[el.meta.text + '-'
+																		+ (parentMenu
+																		   || '')] = stackLayoutId
+														 stackLayoutId += 1
 
-                                                                        }
-                                                                        if (el2.type) {
-                                                                          const comp = componentsMap[el2.type]
-                                                                          if (comp) {
-                                                                            el2.meta.modelsKey = addressInObject ? addressInObject + '.' + objectKey + '.' + key : objectKey + '.' + key
-                                                                            const uiForm = comp.createObject(stackLayout, el2.meta)
-                                                                            // ToDo for Lawerence: 1. Create any 3 component defined in variable componentsMap
-                                                                            //                     2. Connect callbacks for component to change the value of nested key (el2.meta.modelsKey)
-                                                                            if (el2.type === 'checkbox') {
-                                                                              uiForm.onToggled.connect(() => {
-                                                                                                         // Example of el2.meta.modelsKey: template.quote.shrink_to_items
-                                                                                                         OP.set(storageConfig, el2.meta.modelsKey, uiForm.checked ? 'yes' : 'no')
-                                                                                                         console.log(OP.get(storageConfig, el2.meta.modelsKey))
-                                                                                                       })
-                                                                            }
-                                                                          }
-                                                                        }
-                                                                      }
-                                                                    })
-                                             }
-                                           })
-    }
-    recursiveReader(jsonObject, undefined, '')
-  }
-  property var storageConfig: cfg
-  property var newConfig: JSON.parse(JSON.stringify(cfg))
-  signal editTrans(string transType)
-  signal replyToTrans(string transType)
-  GridLayout {
-    anchors.fill: parent
-    rows: 5
-    columns: 7
-    columnSpacing: 0
-    rowSpacing: 0
-    flow: GridLayout.LeftToRight
-    Pane {
-      Layout.columnSpan: 2
-      Layout.rowSpan: 5
-      Layout.fillHeight: true
-      Layout.preferredWidth: 250
-      padding: 0
-      NestedList {
-        id: tableSelector
-        outerListSelectedIndex: 0
-        outerList: configPages
-        innerListDict: innerConfigDict
-        onSelectListItem: (index, subIndex) => {
-                            const parent = configPages[index].name
-                            let key = parent + '-'
-                            let child = ''
-                            if (subIndex !== -1) {
-                              child = innerConfigDict[parent][subIndex].name
-                              key = child + '-' + parent
-                            }
-                            currentStackLayoutIndex = stackLayoutMap[key]
-                          }
-      }
-    }
-    Pane {
-      Layout.columnSpan: 5
-      Layout.rowSpan: 4
-      Layout.fillWidth: true
-      Layout.fillHeight: true
-      padding: 10
-      StackLayout {
-        id: stackLayout
-        anchors.fill: parent
-        currentIndex: currentStackLayoutIndex
-      }
-    }
-    Pane {
-      Layout.columnSpan: 5
-      Layout.rowSpan: 1
-      Layout.fillWidth: true
-      RowLayout {
-        Button {
-          text: "Save"
-          onClicked: {
-            backend.saveConfig(newConfig)
-          }
-        }
-        Button {
-          text: "Cancel"
-        }
-      }
-    }
-  }
+														 Object.keys(
+															 el.schema).forEach(
+															 key => {
+																 const el2 = el.schema[key]
+																 if (el2
+																	 && el2.meta) {
+
+																	 if (el2.meta.parent) {
+
+																	 }
+																	 if (el2.type) {
+																		 const comp = componentsMap[el2.type]
+
+																		 if (comp) {
+																			 el2.meta.modelsKey = keysAddress + '.' + key
+																			 const uiForm = comp.createObject(stackLayout.columnLayout, el2.meta)
+																			 uiForm.Layout.leftMargin = 10
+																		 }
+																		 // ToDo connect callbacks
+																	 }
+																 }
+															 })
+													 }
+												 })
+		}
+		recursiveReader(jsonObject, undefined, '')
+	}
+	property var storageConfig: qmlconf.cfg
+	property var newConfig: JSON.parse(JSON.stringify(qmlconf.cfg))
+	signal editTrans(string transType)
+	signal replyToTrans(string transType)
+	GridLayout {
+		anchors.fill: parent
+		rows: 5
+		columns: 7
+		columnSpacing: 0
+		rowSpacing: 0
+		flow: GridLayout.LeftToRight
+		Pane {
+			Layout.columnSpan: 2
+			Layout.rowSpan: 5
+			Layout.fillHeight: true
+			Layout.preferredWidth: 250
+			padding: 0
+			NestedList {
+				id: tableSelector
+				outerListSelectedIndex: 0
+				outerList: configPages
+				innerListDict: innerConfigDict
+				onSelectListItem: (index, subIndex) => {
+									  const parent = configPages[index].name
+									  let key = parent + '-'
+									  let child = ''
+									  if (subIndex !== -1) {
+										  child = innerConfigDict[parent][subIndex].name
+										  key = child + '-' + parent
+									  }
+									  currentStackLayoutIndex = stackLayoutMap[key]
+								  }
+			}
+		}
+		Pane {
+			Layout.columnSpan: 5
+			Layout.rowSpan: 4
+			Layout.fillWidth: true
+			Layout.fillHeight: true
+			padding: 10
+			StackLayout {
+				id: stackLayout
+				anchors.fill: parent
+				currentIndex: currentStackLayoutIndex
+			}
+		}
+		Pane {
+			Layout.columnSpan: 5
+			Layout.rowSpan: 1
+			Layout.fillWidth: true
+			RowLayout {
+				Button {
+					text: "Save"
+					onClicked: {
+						const res = backend.saveConfig(newConfig)
+						messageDialog.saveResult = res
+						messageDialog.open()
+					}
+				}
+				Button {
+					text: "Cancel"
+					onClicked: {
+						configWindow.close()
+					}
+				}
+			}
+		}
+	}
 }

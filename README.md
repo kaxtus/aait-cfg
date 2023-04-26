@@ -1,28 +1,21 @@
-# Parse UI form from JSON to QML 
-This program parses yaml configuration file accompanied by a form yaml file and generate UI qml form based on the yaml config file.
-## Start project
-### Pre-requirements:
-- PySide2 for qml
-- Cerberus for configuration validation
-- PyYaml for reading yaml files
+# QMLConf
 
-These libraries can be installed using command:
+## Overview
+QML only implementation of UI forms generation of user configuration. The UI forms can be set using a schema file (e.g., QMLConf/config_schema.yaml) with `JSON` format.
+The project uses PySide as an engine for QML only, but it doesn't depend on Python, and integrating it with your project is very simple. The part written in python is only in one file `Config.py`. This file has straight forward getters and setters for storing, reading, creating, and updating the user config. Therefore, it can be very easy to port to your language of sort such as c++.
+
+## Requirements:
+Python 3.8.10
+
+### Install:
+The example in this project uses `cerberus` package for validating the provided `CFG` file against the `CFG schema file`. 
 ```asm
-pip3 install pyside2 cerberus pyyaml
+pip3 install cerberus
 ```
-Run with
+
+### Run example:
 ```asm
 python3 test.py
 ```
-## UI Components:
-These components need only to be parsed and created using qtquick control default components
-(e.g., combobox, qt menu, checkbox). The menu need not to be implemented.
-1. Menu item
-2. Menu child item (Till level three)
-3. Dropdown with label you can use qml default drop down
-4. Section (Example Antialiasing item)
-5. Checkbox with label and paragraph
-6. Ordered List
+## How to:
 
-# Job description
-1. 

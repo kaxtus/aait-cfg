@@ -7,8 +7,8 @@ constants:
   delivery: ["1 week", "2 weeks", "3 weeks", "4 weeks", "6 weeks", "8 weeks", "10 weeks", "12 weeks",
              "1 day", "2 days", "3 days", "4 days", "5 days", "6 days", "NQ"]
   currency: ["Euro", "Dollar"]
-  prepared_by: ['Prepared by 1', 'Prepared by 2']
-  fob: ['Hannover', 'Berlin', 'UK']
+  prepared_by: ['Nour Zaboub']
+  fob: ['IKA, Tehran / IR', 'Dubai']
   terms_of_payment: ['Net 30 days']
   minimum_order: ['None, unless specified.']
 
@@ -46,3 +46,5 @@ issuing:
 view:
   table:
     pagination: [100, 200, 'all']
+    columns:
+      width:
